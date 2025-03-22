@@ -75,36 +75,62 @@ $result = $conn->query($sql);
     <!-- Search and Filter Inputs -->
     <div class="d-flex justify-content-between mb-3">
         <div class="d-flex gap-2">
-            <div class="input-group" style="width: 200px;">
-                <input type="text" id="search" class="form-control form-control-sm" placeholder="Search Name & ID" onkeyup="filterTable()">
+            <div class="input-group" style="width: 220px;">
+                <input type="text" id="search" class="form-control form-control-sm" placeholder="Search Student Name or ID" onkeyup="filterTable()">
                 <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearSearch()">
                     <span>&times;</span>
                 </button>
             </div>
-            <select id="filterSex" class="form-select form-select-sm" style="width: 120px;" onchange="filterTable()">
-                <option value="">All Sex</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-            <select id="filterYearLevel" class="form-select form-select-sm" style="width: 120px;" onchange="filterTable()">
-                <option value="">All Years</option>
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                <option value="3">3rd Year</option>
-                <option value="4">4th Year</option>
-            </select>
-            <select id="filterCivilStatus" class="form-select form-select-sm" style="width: 140px;" onchange="filterTable()">
-                <option value="">All Civil Status</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-                <option value="Divorced">Divorced</option>
-                <option value="Widowed">Widowed</option>
-            </select>
-            <select id="filterCitizenship" class="form-select form-select-sm" style="width: 140px;" onchange="filterTable()">
-                <option value="">All Citizenship</option>
-                <option value="Filipino">Filipino</option>
-                <option value="Others">Others</option>
-            </select>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                </button>
+                <div class="dropdown-menu p-3" style="width: 220px;">
+                    <div class="mb-2">
+                        <label class="form-label small">Sex</label>
+                        <select id="filterSex" class="form-select form-select-sm" onchange="filterTable()">
+                            <option value="">All Sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Year Level</label>
+                        <select id="filterYearLevel" class="form-select form-select-sm" onchange="filterTable()">
+                            <option value="">All Years</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Civil Status</label>
+                        <select id="filterCivilStatus" class="form-select form-select-sm" onchange="filterTable()">
+                            <option value="">All Civil Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Citizenship</label>
+                        <select id="filterCitizenship" class="form-select form-select-sm" onchange="filterTable()">
+                            <option value="">All Citizenship</option>
+                            <option value="Filipino">Filipino</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button class="btn btn-sm btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                        <button class="btn btn-sm btn-primary" onclick="applyFilters()">Apply</button>
+                    </div>
+                </div>
+            </div>
+
             <select id="recordsPerPage" class="form-select form-select-sm" style="width: 80px;" onchange="changeRecordsPerPage()">
                 <option value="10">10</option>
                 <option value="25">25</option>
@@ -195,13 +221,30 @@ $result = $conn->query($sql);
     <h3 class="mt-4">Add Student</h3>
     <form id="studentForm" action="api/add_student.php" method="POST">
         <div class="row">
-            <div class="col-md-4"><input type="text" name="student_id" class="form-control mb-2" placeholder="Student ID" required></div>
+            <div class="col-md-4">
+                <input type="text" name="student_id" class="form-control mb-2" 
+                    placeholder="Student ID (YY-####)" required 
+                    pattern="\d{2}-\d{4}" 
+                    title="Student ID must be in format YY-#### (e.g., 22-4567)"
+                    oninput="formatStudentId(this)">
+            </div>
             <div class="col-md-4"><input type="text" name="first_name" class="form-control mb-2" placeholder="First Name" required></div>
             <div class="col-md-4"><input type="text" name="middle_name" class="form-control mb-2" placeholder="Middle Name"></div>
             <div class="col-md-4"><input type="text" name="last_name" class="form-control mb-2" placeholder="Last Name" required></div>
             <div class="col-md-4"><input type="text" name="extension_name" class="form-control mb-2" placeholder="Extension Name"></div>
-            <div class="col-md-4"><input type="email" name="email" class="form-control mb-2" placeholder="Email" required></div>
-            <div class="col-md-4"><input type="text" name="phone" class="form-control mb-2" placeholder="Phone" required></div>
+            <div class="col-md-4">
+                <input type="email" name="email" class="form-control mb-2" 
+                    placeholder="Email" required
+                    pattern="[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|isu\.edu\.ph)$"
+                    title="Please enter a valid email from: gmail.com, yahoo.com, outlook.com, or isu.edu.ph">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="phone" class="form-control mb-2" 
+                    placeholder="Phone (0XXX-XXX-XXXX)" required 
+                    pattern="0\d{3}-\d{3}-\d{4}" 
+                    title="Phone number must be in format 0XXX-XXX-XXXX (e.g., 0912-345-6789)"
+                    oninput="formatPhoneNumber(this)">
+            </div>
             <div class="col-md-4"><input type="text" name="year_level" class="form-control mb-2" placeholder="Year Level" required></div>
             <div class="col-md-4"><input type="text" name="permanent_address" class="form-control mb-2" placeholder="Permanent Address" required></div>
             <div class="col-md-4"><input type="date" name="birthday" class="form-control mb-2" required></div>
@@ -325,8 +368,8 @@ $result = $conn->query($sql);
                 <td>${student.citizenship}</td>
                 <td>${student.civil_status}</td>
                 <td>
-                    <a href='edit_student.php?id=${student.student_id}' class='btn btn-warning btn-sm'>Edit</a>
-                    <a href='delete_student.php?id=${student.student_id}' class='btn btn-danger btn-sm'>Delete</a>
+                    <a href="javascript:void(0)" onclick="editStudent('${student.student_id}')" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="javascript:void(0)" onclick="deleteStudent('${student.student_id}')" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>`;
             tableBody.innerHTML += row;
@@ -336,13 +379,41 @@ $result = $conn->query($sql);
     }
 
     function clearForm() {
-        document.getElementById("studentForm").reset();
+        const form = document.getElementById('studentForm');
+        form.reset();
+        
+        // Reset to add mode
+        const studentIdField = form.querySelector('input[name="student_id"]');
+        studentIdField.readOnly = false;
+        
+        // Remove edit mode hidden field
+        const hiddenEdit = form.querySelector('input[name="isEdit"]');
+        if (hiddenEdit) hiddenEdit.remove();
+        
+        // Reset form action and submit button
+        form.action = 'api/add_student.php';
+        form.querySelector('button[type="submit"]').textContent = 'Add Student';
     }
 
     function clearSearch() {
         document.getElementById("search").value = "";
         currentPage = 1; // Reset to first page
         filterTable();
+    }
+
+    function clearFilters() {
+        document.getElementById("filterSex").value = "";
+        document.getElementById("filterYearLevel").value = "";
+        document.getElementById("filterCivilStatus").value = "";
+        document.getElementById("filterCitizenship").value = "";
+        filterTable();
+    }
+
+    function applyFilters() {
+        filterTable();
+        // Optional: close the dropdown after applying filters
+        // You can uncomment the next line if you want this behavior
+        // document.querySelector('.dropdown-menu').classList.remove('show');
     }
 
     function getCurrentDateTime() {
@@ -456,10 +527,147 @@ $result = $conn->query($sql);
         updateTable();
     }
 
+    function formatPhoneNumber(input) {
+        // Remove non-digits
+        let numbers = input.value.replace(/\D/g, '');
+        
+        // Ensure we don't exceed 11 digits
+        numbers = numbers.substring(0, 11);
+        
+        // Format with dashes
+        if (numbers.length > 0) {
+            let parts = [];
+            parts.push(numbers.substring(0, 4));
+            if (numbers.length > 4) {
+                parts.push(numbers.substring(4, 7));
+            }
+            if (numbers.length > 7) {
+                parts.push(numbers.substring(7, 11));
+            }
+            input.value = parts.join('-');
+        } else {
+            input.value = numbers;
+        }
+    }
+
+    function formatStudentId(input) {
+        // Remove non-digits
+        let numbers = input.value.replace(/\D/g, '');
+        
+        // Limit to 6 digits (2 for year + 4 for number)
+        numbers = numbers.substring(0, 6);
+        
+        // Format with dash
+        if (numbers.length > 0) {
+            let parts = [];
+            parts.push(numbers.substring(0, 2));
+            if (numbers.length > 2) {
+                parts.push(numbers.substring(2, 6));
+            }
+            input.value = parts.join('-');
+        } else {
+            input.value = numbers;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         filteredStudents = allStudents;
         updateTable();
     });
+
+    function editStudent(studentId) {
+        fetch('api/get_student.php?id=' + studentId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.student) {
+                    const form = document.getElementById('studentForm');
+                    // Reset form and remove any previous hidden fields
+                    form.reset();
+                    const oldHidden = form.querySelector('input[name="isEdit"]');
+                    if (oldHidden) oldHidden.remove();
+
+                    // Add hidden field to store original student ID for verification
+                    form.insertAdjacentHTML('beforeend', 
+                        `<input type="hidden" name="original_student_id" value="${studentId}">`);
+
+                    // Fill form with student data
+                    for (let key in data.student) {
+                        if (form.elements[key]) {
+                            form.elements[key].value = data.student[key];
+                        }
+                    }
+
+                    // Add hidden field for edit mode
+                    form.insertAdjacentHTML('beforeend', 
+                        `<input type="hidden" name="isEdit" value="true">`);
+                    form.action = 'api/update_student.php';
+                    
+                    // Update submit button
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    submitBtn.textContent = 'Update Student';
+                    
+                    // Scroll to form
+                    form.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Student not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading student data');
+            });
+    }
+
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const isEdit = formData.get('isEdit');
+        const action = isEdit ? 'api/update_student.php' : 'api/add_student.php';
+
+        fetch(action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert(data.message);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while ' + (isEdit ? 'updating' : 'adding') + ' the student');
+        });
+    });
+
+    function deleteStudent(studentId) {
+        if (confirm('Are you sure you want to delete this student?')) {
+            fetch('api/delete_student.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'id=' + studentId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Student deleted successfully');
+                    location.reload();
+                } else {
+                    alert(data.error || 'Error deleting student');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting student');
+            });
+        }
+    }
 </script>
 
 </body>
