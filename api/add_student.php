@@ -1,118 +1,183 @@
 <?php
-include '../config.php';
-
-header('Content-Type: application/json');
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+header('Content-Type: application/json; charset=utf-8');
 
 try {
+    include '../config.php';
+    require_once '../includes/validation.php';
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception("Invalid request method");
+    }
+
+    // Sanitize all inputs
+    array_walk($_POST, function(&$value) {
+        $value = trim(htmlspecialchars($value, ENT_QUOTES, 'UTF-8'));
+    });
+
     // Validate required fields
-    $required_fields = ['student_id', 'first_name', 'last_name', 'email', 'phone', 
-                       'year_level', 'permanent_address', 'birthday', 'sex', 
-                       'citizenship', 'civil_status'];
+    $required_fields = [
+        'student_id', 'first_name', 'last_name', 'email', 'phone',
+        'year_level', 'permanent_address', 'birthday', 'sex',
+        'citizenship', 'civil_status'
+    ];
     
-    foreach ($required_fields as $field) {
-        if (!isset($_POST[$field]) || empty($_POST[$field])) {
-            throw new Exception("Missing required field: $field");
-        }
+    $missing_fields = array_filter($required_fields, function($field) {
+        return empty($_POST[$field]);
+    });
+
+    if (!empty($missing_fields)) {
+        throw new Exception("Required fields missing: " . implode(', ', $missing_fields));
     }
 
-    // Validate student ID format (YY-####)
-    if (!preg_match('/^\d{2}-\d{4}$/', $_POST['student_id'])) {
-        throw new Exception("Student ID must be in format YY-#### (e.g., 22-4567)");
+    // Validate formats
+    if (!validateStudentId($_POST['student_id'])) {
+        throw new Exception("Invalid student ID format");
     }
 
-    // Validate phone number format (0XXX-XXX-XXXX)
-    if (!preg_match('/^0\d{3}-\d{3}-\d{4}$/', $_POST['phone'])) {
-        throw new Exception("Phone number must be in format 0XXX-XXX-XXXX (e.g., 0912-345-6789)");
+    if (!validatePhoneNumber($_POST['phone'])) {
+        throw new Exception("Invalid phone number format");
     }
 
-    // Validate middle name if provided
-    if (!empty($_POST['middle_name'])) {
-        if (strlen($_POST['middle_name']) < 2 || str_contains($_POST['middle_name'], '.')) {
-            throw new Exception("Middle name must be complete (e.g., 'Ang' not 'A.')");
-        }
+    if (!validateEmail($_POST['email'])) {
+        throw new Exception("Invalid email format");
     }
 
-    // Sanitize inputs
-    $student_id = mysqli_real_escape_string($conn, $_POST['student_id']);
-    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-    $middle_name = mysqli_real_escape_string($conn, $_POST['middle_name'] ?? '');
-    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-    $extension_name = mysqli_real_escape_string($conn, $_POST['extension_name'] ?? '');
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
-    $year_level = mysqli_real_escape_string($conn, $_POST['year_level']);
-    $permanent_address = mysqli_real_escape_string($conn, $_POST['permanent_address']);
-    $birthday = mysqli_real_escape_string($conn, $_POST['birthday']);
-    $sex = mysqli_real_escape_string($conn, $_POST['sex']);
-    $citizenship = mysqli_real_escape_string($conn, $_POST['citizenship']);
-    $civil_status = mysqli_real_escape_string($conn, $_POST['civil_status']);
-
-    // Add email domain validation
-    $valid_domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'isu.edu.ph'];
-    $email_domain = substr(strrchr($email, "@"), 1);
-    if (!in_array($email_domain, $valid_domains)) {
-        throw new Exception("Invalid email domain. Please use gmail.com, yahoo.com, outlook.com, or isu.edu.ph");
+    if (!validateBirthDate($_POST['birthday'])) {
+        throw new Exception("Invalid birth date. Student must be at least 16 years old and born before 2010");
     }
+
+    // Capitalize names before checking duplicates and saving
+    $_POST['first_name'] = properNameCase($_POST['first_name']);
+    $_POST['middle_name'] = properNameCase($_POST['middle_name']);
+    $_POST['last_name'] = properNameCase($_POST['last_name']);
+    $_POST['extension_name'] = properNameCase($_POST['extension_name']);
+    $_POST['permanent_address'] = properNameCase($_POST['permanent_address']);
+
+    // Standardize citizenship
+    $_POST['citizenship'] = standardizeCitizenship($_POST['citizenship']);
 
     // Check for duplicate student ID
-    $check_id_sql = "SELECT student_id FROM students WHERE student_id = ?";
-    $check_id_stmt = $conn->prepare($check_id_sql);
-    $check_id_stmt->bind_param("s", $student_id);
-    $check_id_stmt->execute();
-    if ($check_id_stmt->get_result()->num_rows > 0) {
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM students WHERE student_id = ?");
+    $stmt->bind_param("s", $_POST['student_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->fetch_assoc()['count'] > 0) {
         throw new Exception("Student ID already exists");
     }
 
+    // Check for duplicate name
+    $name_check_sql = "SELECT COUNT(*) as count FROM students WHERE 
+                      first_name = ? AND 
+                      COALESCE(middle_name, '') = COALESCE(?, '') AND 
+                      last_name = ? AND 
+                      COALESCE(extension_name, '') = COALESCE(?, '')";
+    
+    $stmt = $conn->prepare($name_check_sql);
+    $stmt->bind_param("ssss", $_POST['first_name'], $_POST['middle_name'], $_POST['last_name'], $_POST['extension_name']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if ($row['count'] > 0) {
+        echo json_encode([
+            'success' => false,
+            'error' => 'duplicate_name',
+            'message' => 'A student with this name already exists'
+        ]);
+        exit;
+    }
+    
     // Check for duplicate email
-    $check_email_sql = "SELECT student_id FROM students WHERE email = ?";
-    $check_email_stmt = $conn->prepare($check_email_sql);
-    $check_email_stmt->bind_param("s", $email);
-    $check_email_stmt->execute();
-    if ($check_email_stmt->get_result()->num_rows > 0) {
-        throw new Exception("Email address already registered");
+    $email_check_sql = "SELECT COUNT(*) as count FROM students WHERE LOWER(email) = LOWER(?)";
+    $stmt = $conn->prepare($email_check_sql);
+    $stmt->bind_param("s", $_POST['email']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if ($row['count'] > 0) {
+        echo json_encode([
+            'success' => false,
+            'error' => 'duplicate_email',
+            'message' => 'This email address is already registered'
+        ]);
+        exit;
     }
 
-    // Check for duplicate phone number
-    $check_phone_sql = "SELECT student_id FROM students WHERE phone = ?";
-    $check_phone_stmt = $conn->prepare($check_phone_sql);
-    $check_phone_stmt->bind_param("s", $phone);
-    $check_phone_stmt->execute();
-    if ($check_phone_stmt->get_result()->num_rows > 0) {
-        throw new Exception("Phone number already registered");
+    // Add check for duplicate phone number
+    $phone_check_sql = "SELECT COUNT(*) as count FROM students WHERE phone = ?";
+    $stmt = $conn->prepare($phone_check_sql);
+    $stmt->bind_param("s", $_POST['phone']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if ($row['count'] > 0) {
+        echo json_encode([
+            'success' => false,
+            'error' => 'duplicate_phone',
+            'message' => 'This phone number is already registered'
+        ]);
+        exit;
     }
 
-    // Check for duplicate name combination
-    $check_name_sql = "SELECT student_id FROM students WHERE first_name = ? AND middle_name = ? AND last_name = ? AND extension_name = ?";
-    $check_name_stmt = $conn->prepare($check_name_sql);
-    $check_name_stmt->bind_param("ssss", $first_name, $middle_name, $last_name, $extension_name);
-    $check_name_stmt->execute();
-    if ($check_name_stmt->get_result()->num_rows > 0) {
-        throw new Exception("Student with this name combination already exists");
-    }
-
-    // Insert new student
-    $sql = "INSERT INTO students (student_id, first_name, middle_name, last_name, 
-            extension_name, email, phone, year_level, permanent_address, birthday, 
-            sex, citizenship, civil_status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // Prepare insert statement
+    $sql = "INSERT INTO students (
+        student_id, first_name, middle_name, last_name, extension_name, 
+        email, phone, year_level, permanent_address, birthday, 
+        sex, citizenship, civil_status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssssssss", 
-        $student_id, $first_name, $middle_name, $last_name, $extension_name,
-        $email, $phone, $year_level, $permanent_address, $birthday,
-        $sex, $citizenship, $civil_status
-    );
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Student added successfully"]);
-    } else {
-        throw new Exception("Error executing query: " . $stmt->error);
+    if (!$stmt) {
+        throw new Exception("Database error: " . $conn->error);
     }
 
-} catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode(["error" => $e->getMessage()]);
-}
+    // Capitalize names and address before saving
+    $stmt->bind_param("sssssssssssss",
+        $_POST['student_id'],
+        properNameCase($_POST['first_name']),
+        properNameCase($_POST['middle_name']),
+        properNameCase($_POST['last_name']),
+        properNameCase($_POST['extension_name']),
+        strtolower($_POST['email']),
+        $_POST['phone'],
+        $_POST['year_level'],
+        properNameCase(str_replace('Array', '', $_POST['permanent_address'])), // Remove any "Array" text
+        $_POST['birthday'],
+        $_POST['sex'],
+        standardizeCitizenship($_POST['citizenship']),
+        $_POST['civil_status']
+    );
 
-$conn->close();
+    if (!$stmt->execute()) {
+        throw new Exception("Error saving student: " . $stmt->error);
+    }
+
+    // Get updated stats and return response
+    $stats = $conn->query("SELECT 
+        (SELECT COUNT(*) FROM students) as total_students,
+        (SELECT COUNT(*) FROM students WHERE sex = 'Male') as male_count,
+        (SELECT COUNT(*) FROM students WHERE sex = 'Female') as female_count
+    ")->fetch_assoc();
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Student added successfully',
+        'student' => array_merge($_POST, ['id' => $conn->insert_id]),
+        'stats' => $stats
+    ]);
+
+} catch (Exception $e) {
+    error_log('Error in add_student.php: ' . $e->getMessage());
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
+} finally {
+    if (isset($conn)) $conn->close();
+}
 ?>

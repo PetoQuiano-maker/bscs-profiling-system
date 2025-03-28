@@ -1,0 +1,45 @@
+[28-Mar-2025 15:37:31 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:31 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:31 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:36 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:36 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:36 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:36 Europe/Berlin] Error in add_student.php: Student ID already exists
+[28-Mar-2025 15:37:36 Europe/Berlin] Stack trace: #0 {main}
+[28-Mar-2025 15:37:40 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:40 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:40 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:37:40 Europe/Berlin] Error in add_student.php: Student ID already exists
+[28-Mar-2025 15:37:40 Europe/Berlin] Stack trace: #0 {main}
+[28-Mar-2025 15:38:37 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:38:37 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:38:37 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:38:37 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:38:37 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:38:37 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\htdocs\bscs_profiling_system\includes\validation.php on line 69
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 140
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 141
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 142
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 143
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 144
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 147
+[28-Mar-2025 15:42:21 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 150
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 141
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 142
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 143
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 144
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 145
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 148
+[28-Mar-2025 15:45:17 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 151
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 141
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 142
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 143
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 144
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 145
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 148
+[28-Mar-2025 15:46:30 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 151

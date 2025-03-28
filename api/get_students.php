@@ -1,14 +1,33 @@
 <?php
-include 'config.php';
+include '../config.php';
 
-$sql = "SELECT student_id, first_name, middle_name, last_name, extension_name, email, phone, year_level, permanent_address, birthday, sex, citizenship, civil_status FROM students";
-$result = $conn->query($sql);
+header('Content-Type: application/json');
 
-$students = [];
-while ($row = $result->fetch_assoc()) {
-    $students[] = $row;
+try {
+    $sql = "SELECT * FROM students ORDER BY student_id ASC";
+    $result = $conn->query($sql);
+
+    if (!$result) {
+        throw new Exception($conn->error);
+    }
+
+    $students = [];
+    while ($row = $result->fetch_assoc()) {
+        // Ensure consistent data format
+        $students[] = array_map(function($value) {
+            return $value === null ? '' : $value;
+        }, $row);
+    }
+
+    echo json_encode($students);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        "error" => true,
+        "message" => $e->getMessage()
+    ]);
 }
 
-echo json_encode($students);
 $conn->close();
 ?>
