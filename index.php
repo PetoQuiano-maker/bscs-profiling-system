@@ -571,12 +571,110 @@ $result = $conn->query($sql);
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearAddStudentForm()">Clear Form</button>
                     <button type="submit" form="addStudentForm" class="btn btn-primary">Save Student</button>
                 </div>
             </div>
         </div>
     </div>
+
+<!-- Edit Student Modal -->
+<div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="editStudentModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStudentModalLabel">Edit Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm" onsubmit="return submitEditStudent(event)" autocomplete="on">
+                    <input type="hidden" id="editStudentId" name="student_id">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="editEmail">Email</label>
+                            <input type="email" class="form-control email-field" id="editEmail" 
+                                   name="email" required autocomplete="email"
+                                   pattern="[a-z0-9._%+-]+@(gmail\.com|yahoo\.com|yahoo\.com\.ph|outlook\.com|hotmail\.com|isu\.edu\.ph)$"
+                                   title="Please use Gmail, Yahoo, Outlook, Hotmail or ISU email address">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="editFirstName">First Name</label>
+                            <input type="text" class="form-control" id="editFirstName" name="first_name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="editMiddleName">Middle Name</label>
+                            <input type="text" class="form-control" id="editMiddleName" name="middle_name">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="editLastName">Last Name</label>
+                            <input type="text" class="form-control" id="editLastName" name="last_name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="editExtensionName">Extension Name</label>
+                            <input type="text" class="form-control" id="editExtensionName" name="extension_name">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="editPhone">Phone</label>
+                            <input type="tel" class="form-control" id="editPhone" name="phone" 
+                                   pattern="^09\d{2}-\d{3}-\d{4}$"
+                                   title="Please enter a valid phone number in the format: 0912-345-6789"
+                                   required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="editBirthday">Birthday</label>
+                            <input type="date" class="form-control" id="editBirthday" name="birthday" 
+                                   required max="2009-12-31">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="editSex">Sex</label>
+                            <select class="form-select" id="editSex" name="sex" required>
+                                <option value="">Choose...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="editYearLevel">Year Level</label>
+                            <select class="form-select" id="editYearLevel" name="year_level" required>
+                                <option value="">Choose...</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="editCivilStatus">Civil Status</label>
+                            <select class="form-select" id="editCivilStatus" name="civil_status" required>
+                                <option value="">Choose...</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="editCitizenship">Citizenship</label>
+                            <select class="form-select" id="editCitizenship" name="citizenship" required>
+                                <option value="">Choose...</option>
+                                <option value="Filipino">Filipino</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="editPermanentAddress">Permanent Address</label>
+                            <textarea class="form-control" id="editPermanentAddress" name="permanent_address" required></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="editStudentForm" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Add Loading Spinner -->
 <div class="spinner-overlay">
@@ -916,45 +1014,98 @@ $result = $conn->query($sql);
     }
 
     function editStudent(id) {
-        // Implement edit functionality
-    }
-
-    function deleteStudent(id) {
-        if (confirm('Are you sure you want to delete this student?')) {
-            showLoading();
-            
-            const formData = new FormData();
-            formData.append('student_id', id);
-
-            fetch('api/delete_student.php', {
-                method: 'POST',
-                body: formData
-            })
+        showLoading();
+        fetch(`api/get_student.php?id=${id}`)
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    allStudents = allStudents.filter(student => student.student_id !== id);
-                    filteredStudents = filteredStudents.filter(student => student.student_id !== id);
-                    updateTable();
-                    
-                    // Update stats using the helper function
-                    if (data.stats) {
-                        updateDashboardStats(data.stats);
-                    }
-                    
-                    alert('Student deleted successfully');
+                if (data.success && data.student) {
+                    const student = data.student;
+                    document.getElementById('editStudentId').value = student.student_id;
+                    document.getElementById('editEmail').value = student.email;
+                    document.getElementById('editFirstName').value = student.first_name;
+                    document.getElementById('editMiddleName').value = student.middle_name || '';
+                    document.getElementById('editLastName').value = student.last_name;
+                    document.getElementById('editExtensionName').value = student.extension_name || '';
+                    document.getElementById('editPhone').value = student.phone;
+                    document.getElementById('editBirthday').value = student.birthday;
+                    document.getElementById('editSex').value = student.sex;
+                    document.getElementById('editYearLevel').value = student.year_level;
+                    document.getElementById('editCivilStatus').value = student.civil_status;
+                    document.getElementById('editCitizenship').value = student.citizenship;
+                    document.getElementById('editPermanentAddress').value = student.permanent_address;
+
+                    const editModal = new bootstrap.Modal(document.getElementById('editStudentModal'));
+                    editModal.show();
                 } else {
-                    alert(data.message || 'Error deleting student');
+                    alert('Error loading student data');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error deleting student');
+                alert('Error loading student data');
             })
             .finally(() => {
                 hideLoading();
             });
+    }
+
+    function submitEditStudent(event) {
+        event.preventDefault();
+        showLoading();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        // Client-side validation
+        try {
+            if (!validatePhoneNumber(formData.get('phone'))) {
+                throw new Error('Invalid phone number format');
+            }
+            if (!validateEmail(formData.get('email'))) {
+                throw new Error('Invalid email format');
+            }
+        } catch (error) {
+            hideLoading();
+            alert(error.message);
+            return false;
         }
+
+        fetch('api/update_student.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(handleServerResponse)
+        .then(data => {
+            if (data.success) {
+                // Update the students arrays
+                const index = allStudents.findIndex(s => s.student_id === data.student.student_id);
+                if (index !== -1) {
+                    allStudents[index] = data.student;
+                }
+                filteredStudents = [...allStudents];
+                updateTable();
+                
+                if (data.stats) {
+                    updateDashboardStats(data.stats);
+                }
+                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editStudentModal'));
+                modal?.hide();
+                
+                alert('Student updated successfully!');
+            } else {
+                throw new Error(data.message || 'Failed to update student');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || 'Failed to update student');
+        })
+        .finally(() => {
+            hideLoading();
+        });
+
+        return false;
     }
 
     function highlightText(text, searchTerm) {
@@ -1067,6 +1218,61 @@ $result = $conn->query($sql);
         }
     }
 
+    function clearAddStudentForm() {
+        const form = document.getElementById('addStudentForm');
+        form.reset();
+        
+        // Clear any custom validity messages
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.setCustomValidity('');
+            input.classList.remove('is-invalid');
+        });
+
+        // Focus on the first field
+        document.getElementById('studentId').focus();
+    }
+
+    function deleteStudent(id) {
+        // Show confirmation dialog with student details
+        if (confirm('Are you sure you want to delete this student?')) {
+            showLoading();
+            
+            const formData = new FormData();
+            formData.append('student_id', id);
+
+            fetch('api/delete_student.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(handleServerResponse)
+            .then(data => {
+                if (data.success) {
+                    // Remove student from arrays
+                    allStudents = allStudents.filter(student => student.student_id !== id);
+                    filteredStudents = filteredStudents.filter(student => student.student_id !== id);
+                    
+                    // Update table and stats
+                    updateTable();
+                    if (data.stats) {
+                        updateDashboardStats(data.stats);
+                    }
+                    
+                    alert('Student deleted successfully');
+                } else {
+                    throw new Error(data.message || 'Error deleting student');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting student: ' + error.message);
+            })
+            .finally(() => {
+                hideLoading();
+            });
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         filteredStudents = allStudents;
         updateTable();
@@ -1120,6 +1326,7 @@ $result = $conn->query($sql);
             if (lastActiveElement) {
                 lastActiveElement.focus();
             }
+            clearAddStudentForm();
         });
 
         // Add student ID formatting
@@ -1158,6 +1365,29 @@ $result = $conn->query($sql);
         const addressInput = document.getElementById('permanentAddress');
         if (addressInput) {
             addressInput.addEventListener('blur', function() {
+                capitalizeFirstLetter(this);
+            });
+        }
+
+        // Add edit form input handlers
+        const editPhoneInput = document.getElementById('editPhone');
+        editPhoneInput.addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
+
+        const editNameInputs = ['editFirstName', 'editMiddleName', 'editLastName', 'editExtensionName'];
+        editNameInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('blur', function() {
+                    capitalizeFirstLetter(this);
+                });
+            }
+        });
+
+        const editAddressInput = document.getElementById('editPermanentAddress');
+        if (editAddressInput) {
+            editAddressInput.addEventListener('blur', function() {
                 capitalizeFirstLetter(this);
             });
         }

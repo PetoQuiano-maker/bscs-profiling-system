@@ -1,0 +1,8 @@
+{
+    "name": "peter/bscs_profiling_system",
+    "description": "\"BSCS Student Profilling System\"",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "10.0"
+    }
+}
