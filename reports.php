@@ -155,7 +155,7 @@ $result = $stmt->get_result();
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php">Dashboard</a>
+                        <a class="nav-link" href="index.php" onclick="navigateToDashboard(event)">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="reports.php">Reports</a>
@@ -377,7 +377,10 @@ $result = $stmt->get_result();
         // Get current version
         const currentVersion = document.getElementById('auditTable').getAttribute('data-version');
 
-        fetch(`reports.php?page=${page}&limit=${limit}&start_date=${startDate}&end_date=${endDate}&version=${currentVersion}`)
+        const controller = new AbortController();
+        window.activeFetch = controller;
+
+        fetch(`reports.php?page=${page}&limit=${limit}&start_date=${startDate}&end_date=${endDate}&version=${currentVersion}`, { signal: controller.signal })
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();
@@ -402,7 +405,11 @@ $result = $stmt->get_result();
                     }
                 }
             })
-            .catch(error => console.error('Error refreshing table:', error));
+            .catch(error => {
+                if (error.name !== 'AbortError') {
+                    console.error('Error refreshing table:', error);
+                }
+            });
     }
 
     // Add animation style
@@ -418,8 +425,8 @@ $result = $stmt->get_result();
         </style>
     `);
 
-    // Increase refresh rate for more responsive updates
-    setInterval(refreshTable, 5000); // Check every 5 seconds
+    // Replace conflicting setInterval calls with a single interval
+    const refreshInterval = setInterval(refreshTable, 5000);
 
     // Add date range validation
     const startDate = document.querySelector('[name="start_date"]');
@@ -434,8 +441,20 @@ $result = $stmt->get_result();
         });
     }
 
-    // Auto-refresh the table every 30 seconds
-    setInterval(refreshTable, 30000);
+    function handleNavigation(event, destination) {
+        event.preventDefault();
+        
+        // Clear the specific refresh interval
+        clearInterval(refreshInterval);
+        
+        // Stop any ongoing fetch requests
+        if (window.activeFetch) {
+            window.activeFetch.abort();
+        }
+        
+        // Perform the navigation
+        window.location.href = destination;
+    }
     </script>
 </body>
 </html>

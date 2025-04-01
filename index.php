@@ -269,7 +269,7 @@ $result = $conn->query($sql);
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Dashboard</a>
+                        <a class="nav-link active" href="javascript:void(0)" onclick="window.location.reload()">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="reports.php">Reports</a>
