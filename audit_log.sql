@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    action ENUM('ADD', 'EDIT', 'DELETE') NOT NULL,
+    student_id VARCHAR(10) NOT NULL,
+    details TEXT NOT NULL,
+    ip_address VARCHAR(45) NOT NULL
+);

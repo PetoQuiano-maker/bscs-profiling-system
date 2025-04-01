@@ -1,5 +1,6 @@
 <?php 
 include '../config.php';
+require_once 'audit_logger.php';  // Add this line
 
 header('Content-Type: application/json');
 
@@ -26,6 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $delete_stmt->bind_param("s", $student_id);
         
         if ($delete_stmt->execute()) {
+            // Add audit log
+            $details = "Deleted student with ID: {$student_id}";
+            logAuditEvent($conn, 'DELETE', $student_id, $details);
+
             // Get updated stats after deleting student
             $total_sql = "SELECT COUNT(*) as total FROM students";
             $male_sql = "SELECT COUNT(*) as count FROM students WHERE sex = 'Male'";

@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 include '../config.php';
+require_once 'audit_logger.php';  // Add this line
 
 try {
     // Validate required fields
@@ -64,6 +65,10 @@ try {
     );
 
     if ($stmt->execute()) {
+        // Add audit log
+        $details = "Updated student information for {$first_name} {$last_name} ({$student_id})";
+        logAuditEvent($conn, 'EDIT', $student_id, $details);
+
         // Get updated student data
         $select_sql = "SELECT * FROM students WHERE student_id = ?";
         $stmt = $conn->prepare($select_sql);

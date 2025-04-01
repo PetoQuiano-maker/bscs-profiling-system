@@ -6,6 +6,7 @@ header('Content-Type: application/json; charset=utf-8');
 try {
     include '../config.php';
     require_once '../includes/validation.php';
+    require_once 'audit_logger.php';  // Add this line
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Invalid request method");
@@ -155,6 +156,10 @@ try {
     if (!$stmt->execute()) {
         throw new Exception("Error saving student: " . $stmt->error);
     }
+
+    // Add audit log
+    $details = "Added new student: {$_POST['first_name']} {$_POST['last_name']} ({$_POST['student_id']})";
+    logAuditEvent($conn, 'ADD', $_POST['student_id'], $details);
 
     // Get updated stats and return response
     $stats = $conn->query("SELECT 
