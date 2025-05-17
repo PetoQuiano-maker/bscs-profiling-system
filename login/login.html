@@ -89,6 +89,8 @@
 
         if (registeredUsers[email] && registeredUsers[email] === password) {
             alert("✅ Login Successful!");
+            // Change from relative path to absolute path
+            window.location.href = 'http://localhost/bscs_profiling_system/index.php';
         } else {
             alert("❌ Invalid email or password.");
         }
