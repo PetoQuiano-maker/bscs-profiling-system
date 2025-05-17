@@ -1437,8 +1437,17 @@ $result = $conn->query($sql);
         .then(data => {
             if (data.success) {
                 alert('Backup created successfully!\nFile: ' + data.filename);
-                // Trigger download
-                window.location.href = 'backups/' + data.filename;
+                // Download the file in the background
+                const link = document.createElement('a');
+                link.href = 'backups/' + data.filename;
+                link.download = data.filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'index.php';
+                }, 1000);
             } else {
                 throw new Error(data.message);
             }
