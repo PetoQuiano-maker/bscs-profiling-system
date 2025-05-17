@@ -277,6 +277,11 @@ $result = $conn->query($sql);
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login/login.html" onclick="return confirm('Are you sure you want to logout?')">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

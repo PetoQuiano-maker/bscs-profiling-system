@@ -655,3 +655,18 @@
 [17-May-2025 20:06:58 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
 [17-May-2025 20:13:36 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
 [17-May-2025 20:13:37 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:19:16 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:19:27 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:19:27 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 142
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 143
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 144
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 145
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 146
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 149
+[17-May-2025 20:22:06 Europe/Berlin] PHP Notice:  Only variables should be passed by reference in C:\xampp\htdocs\bscs_profiling_system\api\add_student.php on line 152
+[17-May-2025 20:22:30 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:22:35 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:22:49 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:22:50 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201
+[17-May-2025 20:23:22 Europe/Berlin] PHP Warning:  Undefined array key "version" in C:\xampp\htdocs\bscs_profiling_system\reports.php on line 201

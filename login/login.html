@@ -118,7 +118,9 @@
 
             if (registeredUsers[email] && registeredUsers[email] === password) {
                 alert("✅ Login Successful!");
-                // Change from relative path to absolute path
+                // Add session storage to track login state
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('userEmail', email);
                 window.location.href = 'http://localhost/bscs_profiling_system/index.php';
             } else {
                 alert("❌ Invalid email or password.");
