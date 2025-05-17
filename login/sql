@@ -1,0 +1,9 @@
+CREATE DATABASE auth_db;
+
+USE auth_db;
+
+CREATE TABLE otps (
+    email VARCHAR(255) PRIMARY KEY,
+    otp VARCHAR(6),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

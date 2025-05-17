@@ -1,0 +1,300 @@
+{
+    "metadata": {
+        "timestamp": "2025-05-17 13:33:43",
+        "database": "bscs_profiling",
+        "version": "1.0"
+    },
+    "tables": {
+        "students": {
+            "structure": [
+                {
+                    "Field": "student_id",
+                    "Type": "varchar(10)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "first_name",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "middle_name",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "last_name",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "extension_name",
+                    "Type": "varchar(10)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "email",
+                    "Type": "varchar(100)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone",
+                    "Type": "varchar(15)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "year_level",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "permanent_address",
+                    "Type": "text",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "birthday",
+                    "Type": "date",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "sex",
+                    "Type": "enum('Male','Female')",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "citizenship",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "civil_status",
+                    "Type": "enum('Single','Married','Divorced','Widowed')",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "data": [
+                {
+                    "student_id": "11-1111",
+                    "first_name": "Peter Paul",
+                    "middle_name": "",
+                    "last_name": "Quiano",
+                    "extension_name": "",
+                    "email": "peterquiano@gmail.com",
+                    "phone": "0999-999-9999",
+                    "year_level": 1,
+                    "permanent_address": "Philippines",
+                    "birthday": "2005-02-28",
+                    "sex": "Male",
+                    "citizenship": "Filipino",
+                    "civil_status": "Single"
+                }
+            ]
+        },
+        "audit_logs": {
+            "structure": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "timestamp",
+                    "Type": "datetime",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "current_timestamp()",
+                    "Extra": ""
+                },
+                {
+                    "Field": "action",
+                    "Type": "enum('ADD','EDIT','DELETE')",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "student_id",
+                    "Type": "varchar(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "details",
+                    "Type": "text",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ip_address",
+                    "Type": "varchar(45)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "data": [
+                {
+                    "id": 1,
+                    "timestamp": "2025-05-17 17:55:59",
+                    "action": "ADD",
+                    "student_id": "11-1111",
+                    "details": "Added new student: Peter Quiano (11-1111)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 2,
+                    "timestamp": "2025-05-17 17:56:13",
+                    "action": "EDIT",
+                    "student_id": "11-1111",
+                    "details": "Updated student information for Peter Paul Quiano (11-1111)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 3,
+                    "timestamp": "2025-05-17 17:56:25",
+                    "action": "DELETE",
+                    "student_id": "11-1111",
+                    "details": "Deleted student with ID: 11-1111",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 4,
+                    "timestamp": "2025-05-17 17:57:24",
+                    "action": "ADD",
+                    "student_id": "22-2222",
+                    "details": "Added new student: Miju Sagaysay (22-2222)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 5,
+                    "timestamp": "2025-05-17 17:57:36",
+                    "action": "EDIT",
+                    "student_id": "22-2222",
+                    "details": "Updated student information for Juliana Sagaysay (22-2222)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 6,
+                    "timestamp": "2025-05-17 17:57:48",
+                    "action": "EDIT",
+                    "student_id": "22-2222",
+                    "details": "Updated student information for Juliana Sagaysay (22-2222)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 7,
+                    "timestamp": "2025-05-17 18:54:13",
+                    "action": "DELETE",
+                    "student_id": "22-2222",
+                    "details": "Deleted student with ID: 22-2222",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 8,
+                    "timestamp": "2025-05-17 19:01:22",
+                    "action": "ADD",
+                    "student_id": "33-3333",
+                    "details": "Added new student: Lhee Sagaysay (33-3333)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 9,
+                    "timestamp": "2025-05-17 19:16:25",
+                    "action": "DELETE",
+                    "student_id": "33-3333",
+                    "details": "Deleted student with ID: 33-3333",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 10,
+                    "timestamp": "2025-05-17 19:19:25",
+                    "action": "ADD",
+                    "student_id": "44-4444",
+                    "details": "Added new student: Paul Gaspar (44-4444)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 11,
+                    "timestamp": "2025-05-17 19:19:42",
+                    "action": "EDIT",
+                    "student_id": "44-4444",
+                    "details": "Updated student information for Peter Paul Gaspar (44-4444)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 12,
+                    "timestamp": "2025-05-17 19:30:27",
+                    "action": "DELETE",
+                    "student_id": "44-4444",
+                    "details": "Deleted student with ID: 44-4444",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 13,
+                    "timestamp": "2025-05-17 19:33:11",
+                    "action": "ADD",
+                    "student_id": "11-1111",
+                    "details": "Added new student: Peter Quiano (11-1111)",
+                    "ip_address": "::1"
+                },
+                {
+                    "id": 14,
+                    "timestamp": "2025-05-17 19:33:19",
+                    "action": "EDIT",
+                    "student_id": "11-1111",
+                    "details": "Updated student information for Peter Paul Quiano (11-1111)",
+                    "ip_address": "::1"
+                }
+            ]
+        }
+    }
+}

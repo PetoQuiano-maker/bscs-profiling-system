@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form with OTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #0f0e0e;
+        }
+        .container {
+            background: rgb(125, 125, 219);
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .forgot {
+            color: rgb(32, 32, 33);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="loginForm">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Enter Email">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="login()">Login</button>
+    <p class="forgot" onclick="forgotPassword()">Forgot Password?</p>
+</div>
+
+<div id="forgotModal" class="container" style="display:none;">
+    <h2>Forgot Password</h2>
+    <input type="email" id="forgotEmail" placeholder="Enter Registered Email">
+    <button onclick="sendOTP()">Send OTP</button>
+    <button onclick="backToLogin()" style="background: #dc3545; margin-top: 10px;">Back to Login</button>
+</div>
+
+<div id="otpModal" class="container" style="display:none;">
+    <h2>Enter OTP</h2>
+    <input type="text" id="otpInput" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify OTP</button>
+    
+    <!-- 🆕 Resend OTP button -->
+    <button onclick="resendOTP()" style="background: #ffc107; margin-top: 10px;">Resend OTP</button>
+    
+    <button onclick="backToForgotPassword()" style="background: #dc3545; margin-top: 10px;">Back to Forgot Password</button>
+</div>
+
+<div id="resetModal" class="container" style="display:none;">
+    <h2>Reset Password</h2>
+    <input type="password" id="newPassword" placeholder="Enter New Password">
+    <button onclick="resetPassword()">Reset Password</button>
+    <button onclick="backToOTP()" style="background: #dc3545; margin-top: 10px;">Back to OTP</button>
+</div>
+
+<script>
+    const registeredUsers = {
+        "panganibanmarkjohn9@gmail.com": "pangs123",
+        "user@example.com": "password123"
+    };
+
+    let resetEmail = "";
+
+    function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        if (registeredUsers[email] && registeredUsers[email] === password) {
+            alert("✅ Login Successful!");
+        } else {
+            alert("❌ Invalid email or password.");
+        }
+    }
+
+    function forgotPassword() {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("forgotModal").style.display = "block";
+    }
+
+    function sendOTP() {
+        const email = document.getElementById("forgotEmail").value;
+        if (registeredUsers[email]) {
+            resetEmail = email;
+            fetch("http://localhost:3000/send-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            })
+            .then(res => res.text())
+            .then(message => {
+                alert("📩 OTP sent to " + email);
+                document.getElementById("forgotModal").style.display = "none";
+                document.getElementById("otpModal").style.display = "block";
+            })
+            .catch(err => {
+                alert("❌ Failed to send OTP.");
+                console.error(err);
+            });
+        } else {
+            alert("❌ Email not registered.");
+        }
+    }
+
+    function verifyOTP() {
+        const otp = document.getElementById("otpInput").value;
+
+        fetch('http://localhost:3000/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: resetEmail,
+                otp: otp
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message === "OTP verified successfully") {
+                document.getElementById("otpModal").style.display = "none";
+                document.getElementById("resetModal").style.display = "block";
+            } else {
+                alert("❌ " + data.message);
+            }
+        })
+        .catch(err => {
+            alert("❌ Something went wrong!");
+            console.error(err);
+        });
+    }
+
+    function resendOTP() {
+        if (!resetEmail) {
+            alert("No email found. Please go back and enter your email again.");
+            return;
+        }
+
+        fetch("http://localhost:3000/resend-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: resetEmail })
+        })
+        .then(res => res.text())
+        .then(message => {
+            alert("🔁 " + message);
+        })
+        .catch(err => {
+            alert("❌ Failed to resend OTP.");
+            console.error(err);
+        });
+    }
+
+    function resetPassword() {
+        const newPassword = document.getElementById("newPassword").value;
+        registeredUsers[resetEmail] = newPassword;
+        alert("🔒 Password reset successful. You can now log in.");
+        document.getElementById("resetModal").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+    }
+
+    function backToLogin() {
+        document.getElementById("forgotModal").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+    }
+
+    function backToForgotPassword() {
+        document.getElementById("otpModal").style.display = "none";
+        document.getElementById("forgotModal").style.display = "block";
+    }
+
+    function backToOTP() {
+        document.getElementById("resetModal").style.display = "none";
+        document.getElementById("otpModal").style.display = "block";
+    }
+</script>
+
+</body>
+</html>
