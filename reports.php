@@ -160,9 +160,6 @@ $result = $stmt->get_result();
                     <li class="nav-item">
                         <a class="nav-link active" href="reports.php">Reports</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Settings</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -443,16 +440,10 @@ $result = $stmt->get_result();
 
     function handleNavigation(event, destination) {
         event.preventDefault();
-        
-        // Clear the specific refresh interval
         clearInterval(refreshInterval);
-        
-        // Stop any ongoing fetch requests
         if (window.activeFetch) {
             window.activeFetch.abort();
         }
-        
-        // Perform the navigation
         window.location.href = destination;
     }
     </script>

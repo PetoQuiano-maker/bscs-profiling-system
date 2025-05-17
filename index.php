@@ -275,12 +275,41 @@ $result = $conn->query($sql);
                         <a class="nav-link" href="reports.php">Reports</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Settings</a>
+                        <a class="nav-link" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    
+    <!-- Add Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="backupDatabase()">
+                            <i class="bi bi-download"></i> Backup Database
+                        </button>
+                        <div class="mt-3">
+                            <label for="restoreFile" class="form-label">Restore Database</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="restoreFile" accept=".json">
+                                <button class="btn btn-warning" onclick="restoreDatabase()">
+                                    <i class="bi bi-upload"></i> Restore
+                                </button>
+                            </div>
+                            <div class="form-text">Only .json backup files are supported</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container-fluid">
         <div class="row">
@@ -1392,12 +1421,73 @@ $result = $conn->query($sql);
             });
         }
     });
-</script>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    function backupDatabase() {
+        if (!confirm('Do you want to create a database backup?')) return;
+        
+        showLoading();
+        const formData = new FormData();
+        formData.append('action', 'backup');
+        
+        fetch('backup_restore.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Backup created successfully!\nFile: ' + data.filename);
+                // Trigger download
+                window.location.href = 'backups/' + data.filename;
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Backup failed: ' + error.message);
+        })
+        .finally(() => {
+            hideLoading();
+        });
+    }
+
+    function restoreDatabase() {
+        const fileInput = document.getElementById('restoreFile');
+        if (!fileInput.files.length) {
+            alert('Please select a backup file first');
+            return;
+        }
+
+        if (!confirm('Warning: This will override all existing data. Continue?')) return;
+        
+        showLoading();
+        const formData = new FormData();
+        formData.append('action', 'restore');
+        formData.append('backupFile', fileInput.files[0]);
+        
+        fetch('backup_restore.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Database restored successfully!');
+                window.location.reload();
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Restore failed: ' + error.message);
+        })
+        .finally(() => {
+            hideLoading();
+            fileInput.value = '';
+        });
+    }
+    </script>
 </body>
 </html>
