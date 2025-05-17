@@ -4,197 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form with OTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #0f0e0e;
+        :root {
+            --primary-color: #34495e;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
         }
+        
+        body {
+            font-family: var(--bs-body-font-family);
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .container {
-            background: rgb(125, 125, 219);
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 400px;
             text-align: center;
         }
-        input {
-            width: 90%;
-            padding: 8px;
-            margin: 10px 0;
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
         }
-        button {
+
+        .form-control {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
             width: 100%;
             padding: 10px;
-            background: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
+            margin-bottom: 10px;
         }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
         .forgot {
-            color: rgb(32, 32, 33);
+            color: var(--primary-color);
             cursor: pointer;
             text-decoration: underline;
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
+    <div class="container" id="loginForm">
+        <h2>BSCS Student Profiling System</h2>
+        <div class="mb-3">
+            <input type="email" class="form-control" id="email" placeholder="Enter Email">
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="password" placeholder="Enter Password">
+        </div>
+        <button class="btn btn-primary" onclick="login()">Login</button>
+        <p class="forgot" onclick="forgotPassword()">Forgot Password?</p>
+    </div>
 
-<div class="container" id="loginForm">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Enter Email">
-    <input type="password" id="password" placeholder="Enter Password">
-    <button onclick="login()">Login</button>
-    <p class="forgot" onclick="forgotPassword()">Forgot Password?</p>
-</div>
+    <div id="forgotModal" class="container" style="display:none;">
+        <h2>Forgot Password</h2>
+        <div class="mb-3">
+            <input type="email" class="form-control" id="forgotEmail" placeholder="Enter Registered Email">
+        </div>
+        <button class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
+        <button class="btn btn-danger" onclick="backToLogin()">Back to Login</button>
+    </div>
 
-<div id="forgotModal" class="container" style="display:none;">
-    <h2>Forgot Password</h2>
-    <input type="email" id="forgotEmail" placeholder="Enter Registered Email">
-    <button onclick="sendOTP()">Send OTP</button>
-    <button onclick="backToLogin()" style="background: #dc3545; margin-top: 10px;">Back to Login</button>
-</div>
+    <div id="otpModal" class="container" style="display:none;">
+        <h2>Enter OTP</h2>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="otpInput" placeholder="Enter OTP">
+        </div>
+        <button class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
+        <button class="btn btn-warning" onclick="resendOTP()">Resend OTP</button>
+        <button class="btn btn-danger" onclick="backToForgotPassword()">Back</button>
+    </div>
 
-<div id="otpModal" class="container" style="display:none;">
-    <h2>Enter OTP</h2>
-    <input type="text" id="otpInput" placeholder="Enter OTP">
-    <button onclick="verifyOTP()">Verify OTP</button>
-    
-    <!-- 🆕 Resend OTP button -->
-    <button onclick="resendOTP()" style="background: #ffc107; margin-top: 10px;">Resend OTP</button>
-    
-    <button onclick="backToForgotPassword()" style="background: #dc3545; margin-top: 10px;">Back to Forgot Password</button>
-</div>
+    <div id="resetModal" class="container" style="display:none;">
+        <h2>Reset Password</h2>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="newPassword" placeholder="Enter New Password">
+        </div>
+        <button class="btn btn-primary" onclick="resetPassword()">Reset Password</button>
+        <button class="btn btn-danger" onclick="backToOTP()">Back</button>
+    </div>
 
-<div id="resetModal" class="container" style="display:none;">
-    <h2>Reset Password</h2>
-    <input type="password" id="newPassword" placeholder="Enter New Password">
-    <button onclick="resetPassword()">Reset Password</button>
-    <button onclick="backToOTP()" style="background: #dc3545; margin-top: 10px;">Back to OTP</button>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const registeredUsers = {
+            "panganibanmarkjohn9@gmail.com": "pangs123",
+            "user@example.com": "password123"
+        };
 
-<script>
-    const registeredUsers = {
-        "panganibanmarkjohn9@gmail.com": "pangs123",
-        "user@example.com": "password123"
-    };
+        let resetEmail = "";
 
-    let resetEmail = "";
+        function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-    function login() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        if (registeredUsers[email] && registeredUsers[email] === password) {
-            alert("✅ Login Successful!");
-            // Change from relative path to absolute path
-            window.location.href = 'http://localhost/bscs_profiling_system/index.php';
-        } else {
-            alert("❌ Invalid email or password.");
+            if (registeredUsers[email] && registeredUsers[email] === password) {
+                alert("✅ Login Successful!");
+                // Change from relative path to absolute path
+                window.location.href = 'http://localhost/bscs_profiling_system/index.php';
+            } else {
+                alert("❌ Invalid email or password.");
+            }
         }
-    }
 
-    function forgotPassword() {
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("forgotModal").style.display = "block";
-    }
+        function forgotPassword() {
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("forgotModal").style.display = "block";
+        }
 
-    function sendOTP() {
-        const email = document.getElementById("forgotEmail").value;
-        if (registeredUsers[email]) {
-            resetEmail = email;
-            fetch("http://localhost:3000/send-otp", {
+        function sendOTP() {
+            const email = document.getElementById("forgotEmail").value;
+            if (registeredUsers[email]) {
+                resetEmail = email;
+                fetch("http://localhost:3000/send-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                })
+                .then(res => res.text())
+                .then(message => {
+                    alert("📩 OTP sent to " + email);
+                    document.getElementById("forgotModal").style.display = "none";
+                    document.getElementById("otpModal").style.display = "block";
+                })
+                .catch(err => {
+                    alert("❌ Failed to send OTP.");
+                    console.error(err);
+                });
+            } else {
+                alert("❌ Email not registered.");
+            }
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById("otpInput").value;
+
+            fetch('http://localhost:3000/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: resetEmail,
+                    otp: otp
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message === "OTP verified successfully") {
+                    document.getElementById("otpModal").style.display = "none";
+                    document.getElementById("resetModal").style.display = "block";
+                } else {
+                    alert("❌ " + data.message);
+                }
+            })
+            .catch(err => {
+                alert("❌ Something went wrong!");
+                console.error(err);
+            });
+        }
+
+        function resendOTP() {
+            if (!resetEmail) {
+                alert("No email found. Please go back and enter your email again.");
+                return;
+            }
+
+            fetch("http://localhost:3000/resend-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email: resetEmail })
             })
             .then(res => res.text())
             .then(message => {
-                alert("📩 OTP sent to " + email);
-                document.getElementById("forgotModal").style.display = "none";
-                document.getElementById("otpModal").style.display = "block";
+                alert("🔁 " + message);
             })
             .catch(err => {
-                alert("❌ Failed to send OTP.");
+                alert("❌ Failed to resend OTP.");
                 console.error(err);
             });
-        } else {
-            alert("❌ Email not registered.");
-        }
-    }
-
-    function verifyOTP() {
-        const otp = document.getElementById("otpInput").value;
-
-        fetch('http://localhost:3000/verify-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: resetEmail,
-                otp: otp
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message === "OTP verified successfully") {
-                document.getElementById("otpModal").style.display = "none";
-                document.getElementById("resetModal").style.display = "block";
-            } else {
-                alert("❌ " + data.message);
-            }
-        })
-        .catch(err => {
-            alert("❌ Something went wrong!");
-            console.error(err);
-        });
-    }
-
-    function resendOTP() {
-        if (!resetEmail) {
-            alert("No email found. Please go back and enter your email again.");
-            return;
         }
 
-        fetch("http://localhost:3000/resend-otp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: resetEmail })
-        })
-        .then(res => res.text())
-        .then(message => {
-            alert("🔁 " + message);
-        })
-        .catch(err => {
-            alert("❌ Failed to resend OTP.");
-            console.error(err);
-        });
-    }
+        function resetPassword() {
+            const newPassword = document.getElementById("newPassword").value;
+            registeredUsers[resetEmail] = newPassword;
+            alert("🔒 Password reset successful. You can now log in.");
+            document.getElementById("resetModal").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+        }
 
-    function resetPassword() {
-        const newPassword = document.getElementById("newPassword").value;
-        registeredUsers[resetEmail] = newPassword;
-        alert("🔒 Password reset successful. You can now log in.");
-        document.getElementById("resetModal").style.display = "none";
-        document.getElementById("loginForm").style.display = "block";
-    }
+        function backToLogin() {
+            document.getElementById("forgotModal").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+        }
 
-    function backToLogin() {
-        document.getElementById("forgotModal").style.display = "none";
-        document.getElementById("loginForm").style.display = "block";
-    }
+        function backToForgotPassword() {
+            document.getElementById("otpModal").style.display = "none";
+            document.getElementById("forgotModal").style.display = "block";
+        }
 
-    function backToForgotPassword() {
-        document.getElementById("otpModal").style.display = "none";
-        document.getElementById("forgotModal").style.display = "block";
-    }
-
-    function backToOTP() {
-        document.getElementById("resetModal").style.display = "none";
-        document.getElementById("otpModal").style.display = "block";
-    }
-</script>
-
+        function backToOTP() {
+            document.getElementById("resetModal").style.display = "none";
+            document.getElementById("otpModal").style.display = "block";
+        }
+    </script>
 </body>
 </html>
